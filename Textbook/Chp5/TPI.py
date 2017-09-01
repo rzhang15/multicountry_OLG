@@ -247,6 +247,7 @@ def paths_life(params, beg_age, beg_wealth, nvec, rpath, wpath,
     b_err_params = (beta, sigma)
     b_err_vec = ss.get_b_errors(b_err_params, rpath[1:], cpath,
                                 c_cnstr, EulDiff)
+    print(bpath)
     return bpath, cpath, b_err_vec
 
 

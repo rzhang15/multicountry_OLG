@@ -78,7 +78,13 @@ def print_time(seconds, type):
               str(hrs) + ' hrs, ' + str(mins) + ' min, ' +
               str(secs) + ' sec')
 
-
+def get_nvec(S):
+    cutoff = int(round(2*S/3))
+    nvec1 = np.ones(cutoff)
+    nvec2 = np.ones(S-cutoff)*0.2
+    nvec = np.concatenate((nvec1,nvec2))
+    return nvec
+    
 def get_cvec(r, w, bvec, nvec):
     '''
     --------------------------------------------------------------------

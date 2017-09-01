@@ -51,28 +51,29 @@ EulDiff      = Boolean, =True if want difference version of Euler errors
 ------------------------------------------------------------------------
 '''
 # Household parameters
-S = int(3)
+life = int(80)
+S = int(80)
 beta_annual = .96
-beta = beta_annual ** 20
+beta = beta_annual ** (life/S)
 sigma = 3.0
-nvec = np.array([1.0, 1.0, 0.2])
+nvec = ss.get_nvec(S)
 L = nvec.sum()
 # Firm parameters
 A = 1.0
 alpha = .35
 delta_annual = .05
-delta = 1 - ((1 - delta_annual) ** 20)
+delta = 1 - ((1 - delta_annual) ** (life/S))
 # SS parameters
 SS_tol = 1e-13
 SS_graphs = True
 # TPI parameters
-T = int(round(6 * S))
+T = 80
 TPI_solve = True
 TPI_tol = 1e-13
 maxiter_TPI = 200
 mindist_TPI = 1e-13
 xi = 0.99
-TPI_graphs = True
+TPI_graphs = False
 # Overall parameters
 EulDiff = False
 
@@ -92,7 +93,7 @@ bvec_guess2 = (2,) vector, guess for steady-state bvec (b1, b2)
 bvec_guess3 = (2,) vector, guess for steady-state bvec (b1, b2)
 
 ------------------------------------------------------------------------
-'''
+
 f_params = (nvec, A, alpha, delta)
 
 bvec_guess1 = np.array([1.0, 1.2])
@@ -113,7 +114,7 @@ print('bvec_guess3', bvec_guess3)
 print('c_cnstr', c_cnstr)
 print('K_cnstr', K_cnstr)
 
-'''
+
 ------------------------------------------------------------------------
 Run the steady-state solution
 ------------------------------------------------------------------------
@@ -132,7 +133,7 @@ ss_output  = length 10 dictionary, {b_ss, c_ss, w_ss, r_ss, K_ss, Y_ss,
 ------------------------------------------------------------------------
 '''
 print('BEGIN EQUILIBRIUM STEADY-STATE COMPUTATION')
-bvec_guess = np.array([0.1, 0.1])
+bvec_guess = np.ones(S-1)*0.1
 f_params = (nvec, A, alpha, delta)
 b_cnstr, c_cnstr, K_cnstr = ss.feasible(f_params, bvec_guess)
 if not K_cnstr and not c_cnstr.max():
@@ -187,7 +188,7 @@ if TPI_solve:
     b_ss = ss_output['b_ss']
     K_ss = ss_output['K_ss']
     C_ss = ss_output['C_ss']
-    bvec1 = np.array([0.8 * b_ss[0], 1.1 * b_ss[1]])
+    bvec1 = bvec_guess = b_ss*0.93
     # Make sure init. period distribution is feasible in terms of K
     K1, K_constr_tpi1 = ss.get_K(bvec1)
     if K_constr_tpi1:
